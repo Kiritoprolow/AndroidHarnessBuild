@@ -63,7 +63,8 @@ class MemoryPromptTest {
     @Test fun textIsNormalizedAndBounded() {
         assertEquals("hello world", MemoryText.normalize("  hello \n\t world  "))
         assertEquals(null, MemoryText.normalize("   "))
-        assertEquals(MemoryText.MAX_ENTRY_CHARS, MemoryText.normalize("x".repeat(1_000))!!.length)
+        // Entries are no longer truncated: a long memory is stored in full.
+        assertEquals(1_000, MemoryText.normalize("x".repeat(1_000))!!.length)
         assertFalse(MemoryText.normalize("valid")!!.isEmpty())
     }
 }

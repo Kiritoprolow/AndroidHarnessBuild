@@ -28,6 +28,7 @@ import com.androidharness.app.data.MemoryPrompt
 import com.androidharness.app.data.MemorySection
 import com.androidharness.app.data.MemoryConsolidation
 import com.androidharness.app.data.MemoryScope
+import com.androidharness.app.data.MemoryText
 import com.androidharness.app.data.db.MemoryEntity
 import com.androidharness.app.data.db.ProjectEntity
 import kotlinx.coroutines.launch
@@ -348,7 +349,7 @@ internal fun MemoryEditDialog(
     error: String? = null,
 ) {
     var owner by remember(initial?.id) { mutableStateOf(initial?.let { MemorySection.fromStored(it.section) } ?: initialSection) }
-    val maxChars = if (initial?.isSummary == true) MemoryConsolidation.MAX_CHARS else 600
+    val maxChars = if (initial?.isSummary == true) MemoryConsolidation.MAX_CHARS else MemoryText.MAX_ENTRY_CHARS
     var text by remember(initial?.id) { mutableStateOf(initial?.text.orEmpty()) }
     var category by remember(initial?.id) { mutableStateOf(MemoryCategory.fromStored(initial?.category)) }
     var scope by remember(initial?.id) { mutableStateOf(MemoryScope.fromStored(initial?.scope)) }
@@ -370,7 +371,9 @@ internal fun MemoryEditDialog(
                     onValueChange = { text = it },
                     enabled = enabled,
                     isError = text.length > maxChars,
-                    supportingText = { Text("${text.length}/$maxChars") },
+                    supportingText = {
+                        Text(if (maxChars >= Int.MAX_VALUE) "${text.length}" else "${text.length}/$maxChars")
+                    },
                     label = { Text(stringResource(R.string.settings_memory_text_label)) },
                     minLines = 2,
                     maxLines = 5,

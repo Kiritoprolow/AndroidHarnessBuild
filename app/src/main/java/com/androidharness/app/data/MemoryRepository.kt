@@ -25,12 +25,13 @@ enum class MemoryCategory {
 }
 
 internal object MemoryText {
-    const val MAX_ENTRY_CHARS = 600
+    // No character limit on a single memory entry.
+    const val MAX_ENTRY_CHARS = Int.MAX_VALUE
 
     fun normalize(raw: String): String? {
         val text = raw.replace(Regex("\\s+"), " ").trim()
         if (text.isEmpty()) return null
-        return text.take(MAX_ENTRY_CHARS)
+        return text
     }
 }
 
